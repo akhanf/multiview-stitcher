@@ -149,16 +149,7 @@ def build_view_adjacency_graph_from_msims(
         )
         overlap_results.append(overlap_result)
 
-    # multithreading doesn't improve performance here (need to check whether
-    # this is still true after removing Geometry3D). Using multiprocessing instead.
-    # Probably need to confirm here that local dask scheduler doesn't conflict
-    # with dask distributed scheduler
-    try:
-        overlap_results = compute(overlap_results, scheduler="processes")[0]
-    except ValueError:
-        # if multiprocessing fails, try default scheduler
-        # (e.g. when running in JupyterLite)
-        overlap_results = compute(overlap_results)[0]
+    overlap_results = compute(overlap_results)[0]
 
     for pair, overlap_result in zip(pairs, overlap_results):
         overlap_area = overlap_result[0]
